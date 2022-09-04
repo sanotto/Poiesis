@@ -1,6 +1,5 @@
 #Poiesis: An application generator.
-
-![Poiesis](poiesis.png "Poiesis")
+ <div style="text-align:center"><img src="https://github.com/sanotto/poiesis/blob/main/poiesis.png" /></div>.
 
 __Poiesis__ (see [Poiesis](https://en.wikipedia.org/wiki/Poiesis) ) is a single page application generator, the generated app will use [React](https://en.wikipedia.org/wiki/React_(JavaScript_library)) and [Mui](https://mui.com/) to build the frontend , [Quarkus](https://en.wikipedia.org/wiki/Quarkus) to create the REST API layer, [Helm](https://helm.sh/) and [Kustomize](https://kustomize.io/) to  manage the deploymet of the microservices to a [Kubernetes](https://en.wikipedia.org/wiki/Kubernetes) cluster.
 In order to achieve the aforementioned goals __Poiesis__ will read a [Markdown](https://en.wikipedia.org/wiki/Markdown) file called __README.md__ that will be located at the project's root directory. This file shall have a special structure that will contain all the information needed to complete the following steps:
