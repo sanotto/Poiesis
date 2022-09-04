@@ -26,6 +26,7 @@ import picocli.CommandLine.Help.Ansi;
 public class Poiesis implements Runnable { 
     
     private static I18n i18n;
+    private static Config config;
 	
     public void run() { 
         // The business logic of the command goes here...
@@ -73,22 +74,29 @@ public static String ask(String message, String ... args) throws IOException {
 	return reader.readLine();
 }
 
-/**
- * Print a message without i18n translation
- * 
- * @param message
- * @param args
- */
-public static void print(String message, String ... args) {
+	/**
+	 * Print a message without i18n translation
+	 * 
+	 * @param message
+	 * @param args
+	 */
+	public static void print(String message, String ... args) {
+		
+		System.out.println(message);
+	}
 	
-	System.out.println(message);
-}
+	public static I18n getI18n() {
+		return i18n;
+	}
+	
+	public static void setI18n(I18n i18n) {
+		Poiesis.i18n = i18n;
+	}
+	public static Config getConfig() throws Exception {
+		if (config == null ) {
+			config = new Config();
+		}
+		return config;
+	}
 
-public static I18n getI18n() {
-	return i18n;
-}
-
-public static void setI18n(I18n i18n) {
-	Poiesis.i18n = i18n;
-}
 }

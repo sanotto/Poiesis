@@ -12,6 +12,6 @@ In order to achieve the aforementioned goals __Poiesis__ will read a [Markdown](
 * Will generate the Dockerfiles needed for [Docker](https://www.docker.com/) to create an image for every endpoint.
 * Will generate the frontend application using React and MUI.
 * Will generate the Dockerfile needed for [Docker](https://www.docker.com/) to publish the single page application from the same kubernetes cluster.
-* Will use [Flyaway](https://flywaydb.org/) to manage database migractions.
+* Will use [Flyway](https://flywaydb.org/) to manage database migractions.
 * Will generate scripts to start, update, stop and delete the local cluster. 
 
