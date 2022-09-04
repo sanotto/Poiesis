@@ -1,0 +1,11 @@
+package com.nixartech.poiesis.commands;
+
+import picocli.CommandLine.Command;
+
+@Command(
+		  name = "about",
+		  description = "about this app"
+		)
+public class About {
+
+}

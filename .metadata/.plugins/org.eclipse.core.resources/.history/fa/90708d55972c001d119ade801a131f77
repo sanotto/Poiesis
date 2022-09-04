@@ -1,0 +1,20 @@
+package com.nixartech.poiesis;
+
+import picocli.CommandLine.Command;
+
+/**
+ * Hello world!
+ *
+ */
+@Command(
+		  name = "poiesis",
+		  description = "NextGen App generator."
+		)
+
+public class Poiesis 
+{
+    public static void main( String[] args )
+    {
+        System.out.println( "Hello World!" );
+    }
+}

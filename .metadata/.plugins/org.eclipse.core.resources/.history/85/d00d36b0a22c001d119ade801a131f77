@@ -1,0 +1,17 @@
+package com.nixartech.poiesis.commands;
+
+import picocli.CommandLine.Command;
+
+@Command(
+		  name = "about",
+		  description = "about this app"
+		)
+public class GenCde implements Runnable {
+
+    @Override
+    public void run() {
+	System.out.println("Generate code from def...");
+	
+    }
+
+}

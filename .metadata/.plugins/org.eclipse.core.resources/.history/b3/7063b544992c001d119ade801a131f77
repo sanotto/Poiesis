@@ -1,0 +1,15 @@
+package com.nixartech.poiesis;
+
+import picocli.CommandLine.Command;
+import picocli.CommandLine.Option;
+import picocli.CommandLine.Parameters;
+
+@Command(mixinStandardHelpOptions = true, version = "v3.0.0",
+header = "Encrypt FILE(s), or standard input, to standard output or to the output file.")
+
+public class Poiesis {
+
+@Option(names = { "-v", "--verbose"}, description = "Verbose mode. Helpful for troubleshooting. Multiple -v options increase the verbosity.")
+private boolean[] verbose;
+
+}

@@ -1,0 +1,254 @@
+package com.nixartech.poiesis;
+
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.SocketException;
+import java.net.UnknownHostException;
+import java.nio.file.Files;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+import com.nixartech.utils.CryptUtils;
+import com.nixartech.utils.CryptUtils.CryptoException;
+import com.nixartech.utils.FileSysUtils;
+import com.nixartech.utils.NetUtils;
+
+/**
+ * Utility class to hold default and config values
+ * @author Ottonello Santiago
+ *
+ */
+public class Config {	
+	TreeMap<String, String> values;
+	
+ 	public Config(String globalConfig, String localConfig) throws Exception { 		
+ 		setupConfig(globalConfig,localConfig);		
+	}
+ 	public Config() throws Exception {
+ 		setupConfig("./README.md","./local.crypt");
+ 	}
+ 		
+ 	private void setupConfig (String globalConfig, String localConfig) throws Exception {
+ 		loadDefaultValues();
+		loadConfigFile(globalConfig, true);		
+		//loadCryptFile(localConfig);
+		
+ 	}
+ 	
+	private void loadDefaultValues() {
+		
+		String user_dir = System.getProperty("user.dir");
+		values = new TreeMap<String, String>();
+		values.put("/srccvt/curdir",user_dir);
+		values.put("/srccvt/lclsrc",FileSysUtils.normalizePath("./"));
+		
+	}
+
+	public void loadConfigFile(String configFile, boolean required) throws Exception, IOException {
+		
+		String sep = java.nio.file.FileSystems.getDefault().getSeparator();
+ 		String configFileName = get("/srccvt/curdir")+sep+configFile;
+ 		File configFileHandler = new File(configFileName);
+ 		
+ 		boolean isReadable = Files.isReadable(configFileHandler.toPath());
+ 		
+		if (isReadable) {
+			load(configFileName);
+		}
+		else if (required) {
+			throw new Exception(configFileName+" not found or not accesible.");
+		}			 		
+	}
+
+	
+	private void load(String config_file) throws IOException {
+		//TODO: F>ix it to load from README.md
+		BufferedReader reader = new BufferedReader(new FileReader(config_file));
+		
+		String line="";
+		while((line= reader.readLine()) != null) {
+			
+			if (line.strip().length() < 2) continue;
+			
+			String fc = line.strip().substring(0,1);
+			String sc = line.substring(1).strip().substring(0,1); 
+			if ( fc.equals("|") && sc.equals("/"))
+			{				
+				String[] parts = line.split("\\|");
+				
+				if (parts.length  >= 3  ) {
+					String key = parts[1].strip().replace(" ", "");
+					String value= parts[2].strip();
+					values.put(key,value);
+				}
+			}
+		}		
+		reader.close();
+	}
+	
+	
+	public TreeMap<String, String> getPath(String path) {
+		return values
+		        .entrySet()
+		        .stream()
+		        .filter(params -> params.getKey().startsWith(path)) 
+		        .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue,
+		                (a, b) -> b, TreeMap::new));
+	}
+	
+	/**
+	 * Return the leaves from a config path up to the level
+	 * @param string
+	 * @param level
+	 * @return
+	 */
+	public Set<String> getLeavesFromPath(String path, int level) {
+		 TreeMap<String, String> m = getPath(path);
+		 Set<String> leaves = new HashSet<String>();
+		 for (String key : m.keySet()) {
+		 			 String parts [] = key.split("/");
+			 if (parts.length >= level ) {
+				 leaves.add(parts[level]);
+			 }
+		 
+		 }
+		 return leaves;
+	}
+	
+	public String getKeyFromValue(String root, String value) {
+		String result=null;
+		TreeMap<String, String> subset = getPath(root);
+		for (Map.Entry<String, String> entry : subset.entrySet()) {
+			if (entry.getValue().contentEquals(value)) {
+				return entry.getKey();
+			}
+		}
+		return result;
+	}
+	/**
+	 * Writes the passwords for the project from the config to password.crypt file
+	 * @throws CryptoException 
+	 * @throws SocketException 
+	 * @throws UnknownHostException 
+	 * @throws UnsupportedEncodingException 
+	 * @throws FileNotFoundException 
+	 */
+	public void writeCryptFile() throws UnknownHostException, SocketException, CryptoException, FileNotFoundException, UnsupportedEncodingException {
+		TreeMap<String, String> subset = getPath("/secure");
+		StringBuilder sb = new StringBuilder();
+		subset.forEach( (String key, String value) -> {
+			String line=key+":"+value+"\n";
+			sb.append(line);
+		});
+		
+		String plaintext = sb.toString();
+		
+		CryptUtils cu = new CryptUtils();		
+		String encrypted = cu.encryptString( NetUtils.getLocalhostMacAddress().toCharArray(), plaintext);
+		FileSysUtils.putStringToFile(encrypted, "./local.crypt");
+	}
+	
+	/**
+	 * Load the passwords for the project from password.crypt file
+	 * @throws IOException 
+	 * @throws CryptoException 
+	 */
+	public void loadCryptFile(String path) throws IOException, CryptoException {
+		path = FileSysUtils.normalizePath(path);
+		LinkedList<String> lines = FileSysUtils.readAllLines(path);
+		String encrypted = lines.element();
+		CryptUtils cu = new  CryptUtils();
+		try {
+			String plainText = cu.decryptString( NetUtils.getLocalhostMacAddress().toCharArray(), encrypted);
+			
+		String[] decryptedLines = plainText.split("\n");
+		for(String line:decryptedLines) {
+			String[] parts = line.split(":");
+			set(parts[0],parts[1]);
+		};
+		}
+		catch (Exception e) {
+			// TODO: handle exception
+		}
+	}
+	
+	/**
+	 * Get a value from configuration wich can not be null
+	 * @param string
+	 * @return
+	 * @throws Exception 
+	 */
+	public String getNotNull(String path) throws Exception {
+		String response = get(path);
+		if (response == null) {
+			throw new Exception(I.getI18n().text("%s configuration entry required",path));
+		}
+		return response;
+	}
+	
+
+	/**
+	 * Return the value for a system values path
+	 * @param path
+	 * @return String value
+	 */
+	public String get(String path, String defaultValue) {
+		if (!values.containsKey(path)) {
+			return defaultValue;
+		}
+		String value = values.get(path.strip());
+		if (value.length() > 10) {
+			String b64Marker = value.substring(0, 8);
+			if (b64Marker.equals("#BASE64#")) {		
+				String encoded = value.substring(8);				
+				byte[] decoded = java.util.Base64.getDecoder().decode(encoded);
+				value = new String(decoded);
+			}
+		}
+		return value;
+	}
+
+	/**
+	 * Return the value for a system values path
+	 * @param path
+	 * @return String value
+	 */
+	public String get(String path) {
+		return get(path, null);
+	}
+	
+	
+	/**
+	 * Insert or updates a key in the config 
+	 * @param key
+	 * @param val
+	 */
+	public void set(String key, String value) {
+		this.put(key, value, false);
+	}
+	
+	/**
+	 * Put a key value entry, the value is encoded using base64 to 
+	 * avoid clashes if / entered as part of the value
+	 * @param key
+	 * @param value
+	 */
+	public void put(String key, String value, boolean encode) {
+    
+		if (encode) {
+			String encoded = java.util.Base64.getEncoder().encodeToString(value.getBytes());
+			value = "#BASE64#"+ encoded;
+		}
+		
+		values.put(key, value);
+	}
+		
+}

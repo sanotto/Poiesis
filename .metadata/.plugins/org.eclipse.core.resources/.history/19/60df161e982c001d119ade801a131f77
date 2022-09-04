@@ -1,0 +1,28 @@
+package com.nixartech.poiesis;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+
+/**
+ * Hello world!
+ *
+ */
+@Command(
+		  name = "poiesis",
+		  description = "NextGen App generator."
+		)
+
+public class App implements Runnable
+{
+    public static void main( String[] args )
+    {
+        
+        CommandLine.run(new App(), args);
+    }
+
+	@Override
+	public void run() {
+		System.out.println("Hello man");
+		
+	}
+}

@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<qualifiedTypeNameHistroy>
+    <fullyQualifiedTypeName name="picocli.CommandLine"/>
+    <fullyQualifiedTypeName name="java.lang.Readable"/>
+    <fullyQualifiedTypeName name="picocli.CommandLine.ParseResult"/>
+    <fullyQualifiedTypeName name="picocli.CommandLine.ParameterException"/>
+    <fullyQualifiedTypeName name="picocli.CommandLine.Parameters"/>
+    <fullyQualifiedTypeName name="picocli.CommandLine.Option"/>
+    <fullyQualifiedTypeName name="picocli.CommandLine.Command"/>
+    <fullyQualifiedTypeName name="java.lang.Runnable"/>
+    <fullyQualifiedTypeName name="com.nixartech.poiesis.commands.About"/>
+    <fullyQualifiedTypeName name="com.nixartech.poiesis.commands.CrtApp"/>
+    <fullyQualifiedTypeName name="com.nixartech.poiesis.commands.GenCde"/>
+    <fullyQualifiedTypeName name="com.nixartech.poiesis.commands.DplApp"/>
+    <fullyQualifiedTypeName name="com.nixartech.utils.I18n"/>
+    <fullyQualifiedTypeName name="java.io.BufferedReader"/>
+    <fullyQualifiedTypeName name="java.io.InputStreamReader"/>
+    <fullyQualifiedTypeName name="java.io.IOException"/>
+    <fullyQualifiedTypeName name="picocli.CommandLine.Help.Ansi"/>
+</qualifiedTypeNameHistroy>

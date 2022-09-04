@@ -1,0 +1,43 @@
+package com.nixartech.utils;
+
+import java.sql.SQLException;
+import java.util.HashMap;
+import java.util.Set;
+
+import com.nixartech.icmd.I;
+
+public class BranchNameUtils {
+	
+	static public String normalizeBranchName(String bn) {
+		
+		String[] p = bn.split("-");
+		String n = p[0];
+		
+		int l  = n.length(); 
+		if (l >=6) {
+			n=n.substring(n.length()-6);
+				
+		}	
+		else {
+			n = "0".repeat(6-l)+n;
+		}
+		n = n.replace(' ', '0');
+		return n;		
+	}
+	
+	static public HashMap<String, String> ensureBranchLibraries(String env, String branchName) throws Exception, SQLException {
+		
+		String brnpfx = I.getConfig().get("/envdsc/"+env.strip()+"/brnpfx");
+		HashMap<String, String> efelib = new HashMap<>(); 
+		Set<String> liblst = I.getConfig().getLeavesFromPath("/liblst",2);		
+		for(String libals : liblst ) {
+			String libtxt = I.getConfig().get("/liblst/"+libals);
+			String libnme=brnpfx+branchName+libals;
+			libnme = libnme.toUpperCase();
+			efelib.put(libals, libnme);
+			I.getIbmi().ensureLibrary(libnme, libtxt);				
+		}
+		return efelib;
+	}	
+
+}

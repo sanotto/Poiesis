@@ -1,0 +1,19 @@
+package com.utils.nixartech.utils.tests;
+
+import static org.junit.Assert.assertEquals;
+
+import org.junit.Test;
+
+import com.nixartech.utils.BranchNameUtils;
+
+public class BranchNameUtilsTest {
+
+	@Test
+	public void testNormalizeBranchName() {
+		assertEquals("000001", BranchNameUtils.normalizeBranchName( "1-Prueba-de-nombre-de-rama"));		
+		assertEquals("000asd", BranchNameUtils.normalizeBranchName( "asd-1-Prueba-de-nombre-de-rama"));
+		assertEquals("d12345", BranchNameUtils.normalizeBranchName( "asd12345-1-Prueba-de-nombre-de-rama"));
+		assertEquals("345678", BranchNameUtils.normalizeBranchName( "12345678-1-Prueba-de-nombre-de-rama"));
+		assertEquals("y0bien", BranchNameUtils.normalizeBranchName( "La ha hecho muy bien"));
+	}
+}

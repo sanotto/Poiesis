@@ -1,0 +1,31 @@
+package com.nixartech.poiesis;
+import com.nixartech.poiesis.commands.About;
+import com.nixartech.poiesis.commands.CrtApp;
+import com.nixartech.poiesis.commands.GenCde;
+
+import picocli.CommandLine;
+import picocli.CommandLine.Command;
+
+@Command(
+	name = "poiesis", 
+	version = "Poiesis 1.0", 
+	mixinStandardHelpOptions = true,
+	subcommands = {
+		About.class,
+		CrtApp.class,
+		GenCde.class,
+	}) 
+public class Poiesis implements Runnable { 
+
+    public void run() { 
+        // The business logic of the command goes here...
+        // In this case, code for generation of ASCII art graphics
+        // (omitted for the sake of brevity).
+	System.out.println("Poiesis....");
+    }
+
+    public static void main(String[] args) {
+        int exitCode = new CommandLine(new Poiesis()).execute(args); 
+        System.exit(exitCode); 
+    }
+}
